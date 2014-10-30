@@ -16,7 +16,14 @@ $RECYCLE.BIN/
 *.o
 *.dep
 *.bak
-
+*.crf
+*.d
+*.axf
+*.map
+*.lst
+*.lnp
+*.htm
+*.sct
 # =========================
 # Operating System Files
 # =========================
