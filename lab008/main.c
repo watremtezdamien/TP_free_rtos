@@ -45,7 +45,11 @@ void vApplicationIdleHook(void)
 {
 	ultimeIdle++;
 }
-void vOrdonnanceur (void)
+void set_gpio(void)
 {
-	GPIO0_SET =test;
+	GPIO0_SET = GPIO0_SET<<itask;
+}
+void clear_gpio(void)
+{
+	GPIO0_CLR = GPIO0_CLR>>itask;
 }
