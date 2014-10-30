@@ -24,7 +24,11 @@ int main(void)
 	
   for(;;);
 }
+/**
+@brief : vTaskFunction 
+@detail : création d'une tache simple et permet ,ici de facilement créé plusieur tache avec la même la fonction
 
+*/
 void vTaskFunction(void *pvParameters)
 {
   char *pcTaskName;
@@ -40,16 +44,21 @@ void vTaskFunction(void *pvParameters)
     vTaskDelayUntil( &xLastWakeTime, ( 250 / portTICK_RATE_MS ) );
   }
 }
-
+/**
+@brief : vApplicationIdleHook 
+@detail : cette fonction est un hook activé via le fichier de config de freertos il permet ainsi par exempl de compter le nombre de fois 
+ou la tache idle est activé permet ainsi de mettre a jours les trace disponible par freertos
+*/
 void vApplicationIdleHook(void)
 {
 	ultimeIdle++;
 }
-void set_gpio(void)
+/**
+@brief : vordonnaceur 
+@detail : fonction permmetant de visualisé l'ordonnanceur sur les pin de sortie pour cela on recupére les valeur de la tache éxécute
+					avec le switch of switchOn et ainsi on peut visualisé les passage d'une tache a une autre avec par exemple un oscilo 
+*/
+void vOrdonnaceur(void)
 {
-	GPIO0_SET = GPIO0_SET<<itask;
-}
-void clear_gpio(void)
-{
-	GPIO0_CLR = GPIO0_CLR>>itask;
+	
 }
