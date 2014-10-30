@@ -62,10 +62,11 @@ to exclude the API function. */
 
 
 #define configEXPECTED_NO_RUNNING_TASKS		( 3 )
-extern unsigned long ulTaskNumber[];
-extern unsigned int itask;
-#define traceTASK_SWITCHED_IN() 	ulTaskNumber[ pxCurrentTCB->uxTCBNumber ] = 1
-#define traceTASK_SWITCHED_OUT() 	ulTaskNumber[ pxCurrentTCB->uxTCBNumber ] = 0
+extern unsigned long ulTaskNumber[]; 
+extern void vOrdonnanceurIn(int iPin);
+extern void vOrdonnanceurOut(int iPin);
+#define traceTASK_SWITCHED_IN() 	vOrdonnanceurIn(pxCurrentTCB->uxTCBNumber)//ulTaskNumber[ pxCurrentTCB->uxTCBNumber ] = 1
+#define traceTASK_SWITCHED_OUT() 	vOrdonnanceurOut(pxCurrentTCB->uxTCBNumber)//ulTaskNumber[ pxCurrentTCB->uxTCBNumber ] = 0
 
 
 

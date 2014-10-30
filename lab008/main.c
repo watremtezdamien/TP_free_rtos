@@ -3,11 +3,14 @@
 #include "task.h"
 
 #include "basic_io.h"
-#define GPIO0_DIR            				(*(unsigned long*)0x2009C003)
+#define GPIO0_DIR            				(*(unsigned long*)0x2009C000)
 #define GPIO0_SET            				(*(unsigned long*)0x2009C018)
 #define GPIO0_CLR            				(*(unsigned long*)0x2009C01C)
 
 void vTaskFunction( void *pvParameters );
+void vOrdonnanceurIn(int iPin);
+void vOrdonnanceurOut(int iPin);
+
 unsigned int itask;
 unsigned long ulTaskNumber[configEXPECTED_NO_RUNNING_TASKS];
 unsigned long ultimeIdle;
@@ -54,11 +57,24 @@ void vApplicationIdleHook(void)
 	ultimeIdle++;
 }
 /**
-@brief : vordonnaceur 
-@detail : fonction permmetant de visualisé l'ordonnanceur sur les pin de sortie pour cela on recupére les valeur de la tache éxécute
-					avec le switch of switchOn et ainsi on peut visualisé les passage d'une tache a une autre avec par exemple un oscilo 
+@brief : vordonnaceurIn 
+@detail :  fonction permettant de voir le changement de 0 a 1 permettant de représenté le chronogramme de lordonnanceur
+					en possition SWITCHIN. visualitation sur GPIO
+@param : iPin permet de selectionné la pin du GPIO a activé
 */
-void vOrdonnaceur(void)
+void vOrdonnanceurIn(int iPin)
 {
-	
+	GPIO0_DIR=iPin;
+	GPIO0_SET =0x1;
+}
+/**
+@brief : dérivé de la fonction vOrdonnanceurIn 
+@detail : fonction permettant de voir le changement de 1 a 0 permettant de représenté le chronogramme de lordonnanceur
+					en possition SWITCHOUT. visualisation sur GPIO
+@param : iPin permet de selectionné la pin du GPIO a activé 
+*/
+void vOrdonnanceurOut(int iPin)
+{
+	GPIO0_DIR=iPin;
+	GPIO0_CLR= 0x1;
 }
