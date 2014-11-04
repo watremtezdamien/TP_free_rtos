@@ -48,7 +48,7 @@ static void vSenderTask( void *pvParameters )
 {
 long lValueToSend;
 portBASE_TYPE xStatus;
-
+const portTickType xTicksToWait = 100 / portTICK_RATE_MS; // ajout pour temps bloquant écriture 
 	lValueToSend = ( long ) pvParameters;
 
 	for( ;; )
@@ -56,7 +56,7 @@ portBASE_TYPE xStatus;
 		// pour permettre le fonctionnement avec un inverse de priorité il suffit de remplacer les temps blockant 
 		// l'écriture devras avoir un temps blockant pour bloqué l'écriture quand la file sera pleine et ainsi permettre a la lecture
 		// de libéré de la place pour écrire a nouveaux 
-		xStatus = xQueueSendToBack( xQueue, &lValueToSend, 100 );
+		xStatus = xQueueSendToBack( xQueue, &lValueToSend, xTicksToWait );
 
 		if( xStatus != pdPASS ) // message en cas d'erreur 
 		{
@@ -76,7 +76,7 @@ static void vReceiverTask( void *pvParameters )
 {
 long lReceivedValue;
 portBASE_TYPE xStatus;
-const portTickType xTicksToWait = 100 / portTICK_RATE_MS;
+//const portTickType xTicksToWait = 100 / portTICK_RATE_MS;
 
 	for( ;; )
 	{
@@ -85,7 +85,7 @@ const portTickType xTicksToWait = 100 / portTICK_RATE_MS;
 			vPrintString( "Queue should have been empty!\r\n" );
 		}
 
-		xStatus = xQueueReceive( xQueue, &lReceivedValue, xTicksToWait );
+		xStatus = xQueueReceive( xQueue, &lReceivedValue, 0);//xTicksToWait ); remplacement de xTicksToWait par 0
 
 		if( xStatus == pdPASS )
 		{
