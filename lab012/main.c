@@ -22,11 +22,12 @@ int main( void )
 
 	if( xQueue != NULL )
 	{
-		xTaskCreate( vSenderTask, "Sender1", 240, ( void * ) 100, 1, NULL );
-		xTaskCreate( vSenderTask, "Sender2", 240, ( void * ) 200, 1, NULL );
+		// priorité inversé 
+		xTaskCreate( vSenderTask, "Sender1", 240, ( void * ) 100, 2, NULL );
+		xTaskCreate( vSenderTask, "Sender2", 240, ( void * ) 200, 2, NULL );
 		// priorité du lecteur permet de preampter les deux tache ecrivaint pour lire les valeurs une seul case sera lu par le recepteur
 		// la file ne peut pas contenir plus d'un item au vu la priorité de la lecture 
-		xTaskCreate( vReceiverTask, "Receiver", 240, NULL, 2, NULL );
+		xTaskCreate( vReceiverTask, "Receiver", 240, NULL, 1, NULL );
 
 		vTaskStartScheduler();
 	}
@@ -52,7 +53,10 @@ portBASE_TYPE xStatus;
 
 	for( ;; )
 	{
-		xStatus = xQueueSendToBack( xQueue, &lValueToSend, 0 );
+		// pour permettre le fonctionnement avec un inverse de priorité il suffit de remplacer les temps blockant 
+		// l'écriture devras avoir un temps blockant pour bloqué l'écriture quand la file sera pleine et ainsi permettre a la lecture
+		// de libéré de la place pour écrire a nouveaux 
+		xStatus = xQueueSendToBack( xQueue, &lValueToSend, 100 );
 
 		if( xStatus != pdPASS ) // message en cas d'erreur 
 		{
