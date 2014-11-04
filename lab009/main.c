@@ -7,6 +7,8 @@
 #define GPIO0_SET            				(*(unsigned long*)0x2009C018)
 #define GPIO0_CLR            				(*(unsigned long*)0x2009C01C)
 #define mainDELAY_LOOP_COUNT		(0xfffff)
+#define mainDELAY_LOOP_COUNT2		(0x8ffff)
+#define mainDELAY_LOOP_COUNT3 	(0x4ffff)
 
 void vTaskFunction( void *pvParameters );
 void vTaskFunction2( void *pvParameters );
@@ -27,8 +29,8 @@ int main(void)
 {
   xTaskCreate( vTaskFunction, "Task 1", 240, (void*)pcTextForTask1, 1, NULL );
 
-  xTaskCreate( vTaskFunction2, "Task 2", 240, (void*)pcTextForTask2, 2, NULL );
-	xTaskCreate( vTaskFunction3, "Task 2", 240, (void*)pcTextForTask3, 2, NULL );
+  xTaskCreate( vTaskFunction2, "Task 2", 240, (void*)pcTextForTask2, 1, NULL );
+	xTaskCreate( vTaskFunction3, "Task 2", 240, (void*)pcTextForTask3, 3, NULL );
   vTaskStartScheduler();	
 	
   for(;;);
@@ -40,56 +42,60 @@ int main(void)
 */
 void vTaskFunction(void *pvParameters)
 {
+	long lCount=0;
 	volatile unsigned long ul;
   char *pcTaskName;
-  portTickType xLastWakeTime;
+
 
   pcTaskName = ( char * ) pvParameters;
-
-  xLastWakeTime = xTaskGetTickCount();
+	
 
   for(;;)	{
+		while(lCount !=100)
+		{
+			lCount++;
+		}
     vPrintString( pcTaskName );
+		vTaskDelay(300);
 
-    for(ul = 0; ul < mainDELAY_LOOP_COUNT; ul++) {
-
-    }
   }
 }
 void vTaskFunction2(void *pvParameters)
 {
+	long lCount=0;
 	volatile unsigned long ul;
   char *pcTaskName;
-  portTickType xLastWakeTime;
+
 
   pcTaskName = ( char * ) pvParameters;
 
-  xLastWakeTime = xTaskGetTickCount();
 
   for(;;)	{
+			while(lCount !=100)
+		{
+			lCount++;
+		}
     vPrintString( pcTaskName );
-
-    for(ul = 0; ul < mainDELAY_LOOP_COUNT; ul++) {
-
-    }
+		vTaskDelay(400);
   }
 }
 void vTaskFunction3(void *pvParameters)
 {
+	long lCount=0;
 	volatile unsigned long ul;
   char *pcTaskName;
-  portTickType xLastWakeTime;
 
   pcTaskName = ( char * ) pvParameters;
-
-  xLastWakeTime = xTaskGetTickCount();
+	
 
   for(;;)	{
+			while(lCount !=200)
+		{
+			lCount++;
+		}
     vPrintString( pcTaskName );
+		vTaskDelay(600);
 
-    for(ul = 0; ul < mainDELAY_LOOP_COUNT; ul++) {
-
-    }
   }
 }
 /**

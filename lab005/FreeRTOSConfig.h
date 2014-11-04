@@ -44,8 +44,8 @@ to exclude the API function. */
 #define INCLUDE_vTaskDelete						0
 #define INCLUDE_vTaskCleanUpResources	0
 #define INCLUDE_vTaskSuspend					1
-#define INCLUDE_vTaskDelayUntil				1
-#define INCLUDE_vTaskDelay						0
+#define INCLUDE_vTaskDelayUntil				0
+#define INCLUDE_vTaskDelay						1
 #define INCLUDE_uxTaskGetStackHighWaterMark	0
 
 /* Use the system definition, if there is one */
@@ -61,13 +61,13 @@ to exclude the API function. */
 #define configMAX_SYSCALL_INTERRUPT_PRIORITY 	( 5 << (8 - configPRIO_BITS) )
 
 
-#define configEXPECTED_NO_RUNNING_TASKS		( 3 )
+#define configEXPECTED_NO_RUNNING_TASKS		( 4 )
 extern unsigned long ulTaskNumber[]; 
 extern void vOrdonnanceurIn(int iPin);
 extern void vOrdonnanceurOut(int iPin);
-#define traceTASK_SWITCHED_IN() 	vOrdonnanceurIn(pxCurrentTCB->uxTCBNumber)//ulTaskNumber[ pxCurrentTCB->uxTCBNumber ] = 1
-#define traceTASK_SWITCHED_OUT() 	vOrdonnanceurOut(pxCurrentTCB->uxTCBNumber)//ulTaskNumber[ pxCurrentTCB->uxTCBNumber ] = 0
-
+#define traceTASK_SWITCHED_IN() 	ulTaskNumber[ pxCurrentTCB->uxTCBNumber ] = 1//vOrdonnanceurIn(pxCurrentTCB->uxTCBNumber)
+#define traceTASK_SWITCHED_OUT() 	ulTaskNumber[ pxCurrentTCB->uxTCBNumber ] = 0
+//vOrdonnanceurOut(pxCurrentTCB->uxTCBNumber)
 
 
 #endif /* FREERTOS_CONFIG_H */
