@@ -52,3 +52,9 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+*.exe
+*.xsd
+*.svd
+*.html
+*.pdf
