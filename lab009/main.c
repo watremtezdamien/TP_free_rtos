@@ -64,7 +64,7 @@ void vApplicationIdleHook(void)
 */
 void vOrdonnanceurIn(int iPin)
 {
-	GPIO0_DIR=iPin;
+	GPIO0_DIR=iPin; // ne pas forcément utilisé dans cette fonction le definir dans l'init au départ gain de temps de cycle 
 	GPIO0_SET =0x1;
 }
 /**
