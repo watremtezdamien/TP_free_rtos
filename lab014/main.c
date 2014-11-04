@@ -7,16 +7,21 @@
 #include "basic_io.h"
 
 unsigned long ulTaskNumber[configEXPECTED_NO_RUNNING_TASKS];
-
+unsigned long UcQueueStatus[configQUEUE_REGISTRY_SIZE];
 static void vSenderTask( void *pvParameters );
 static void vReceiverTask( void *pvParameters );
-typedef struct xTaskData xTaskData;
-struct xTaskData
+typedef struct xTaskData 
 {
 	int8_t uiTache;
 	long lValeur;
-};
-
+}xTaskData;
+/*definition type def pour acquerir les valeurs du registre xqueue*/
+typedef struct QUEUE_REGISTER_ITEM
+{
+	signed char *PcQueueName;
+	xQueueHandle xhandle;
+}xQueueRegistryItem;
+extern xQueueRegistryItem xQueueRegistry[];
 xQueueHandle xQueue;
 // definition des variable structure des différentes taches en global car passé en paramettre 
 // pour permettre ainsi le fonctionnement pvparameters 
@@ -106,6 +111,19 @@ const portTickType xTicksToWait = 100 / portTICK_RATE_MS;
 		else
 		{
 			vPrintString( "Could not receive from the queue.\r\n" );
+		}
+	}
+}
+
+void updateQueueStatus(xQueueHandle xQueue,unsigned char ucValue)
+{
+	unsigned char ux;
+	for (ux=0;ux<configQUEUE_REGISTRY_SIZE;ux++)
+	{
+		if(xQueueRegistry[ux].xhandle==xQueue)
+		{
+			UcQueueStatus[ux]=ucValue;
+			break;
 		}
 	}
 }
