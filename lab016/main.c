@@ -27,7 +27,8 @@ xSemaphoreHandle xBinarySemaphore;
 
 int main( void )
 {
-    vSemaphoreCreateBinary( xBinarySemaphore );
+	
+    vSemaphoreCreateBinary( xBinarySemaphore );//creation d'un semaphore binaire
 
     if( xBinarySemaphore != NULL )
     {
@@ -50,8 +51,13 @@ static void vHandlerTask( void *pvParameters )
 
     for( ;; )
     {
+		 if( xSemaphoreTake( xBinarySemaphore, portMAX_DELAY ) == pdTRUE )
+        {
         vPrintString( "Handler task - Processing event.\n" );
+				}
+			
     }
+		
 }
 
 static void vPeriodicTask( void *pvParameters )
@@ -83,12 +89,3 @@ portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
 
     portEND_SWITCHING_ISR( xHigherPriorityTaskWoken );
 }
-
-
-
-
-
-
-
-
-
