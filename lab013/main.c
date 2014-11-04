@@ -10,21 +10,29 @@ unsigned long ulTaskNumber[configEXPECTED_NO_RUNNING_TASKS];
 
 static void vSenderTask( void *pvParameters );
 static void vReceiverTask( void *pvParameters );
-
+typedef struct tache tache;
+struct tache
+{
+	long lTache;
+	long lValeur;
+};
 
 xQueueHandle xQueue;
 
 
 int main( void )
 {
+	tache tTask1;
+	tache tTask2;
+	
 	 //xQueue pointeur de la file 
     xQueue = xQueueCreate( 5, sizeof( long ) );//! creation d'une file de 5 celulle avec pour longueur le type LONG
 
 	if( xQueue != NULL )
 	{
 		// priorité inversé 
-		xTaskCreate( vSenderTask, "Sender1", 240, ( void * ) 100, 2, NULL );
-		xTaskCreate( vSenderTask, "Sender2", 240, ( void * ) 200, 2, NULL );
+		xTaskCreate( vSenderTask, "Sender1", 240, ( void * ) &tTask1 , 2, NULL );
+		xTaskCreate( vSenderTask, "Sender2", 240, ( void * ) &tTask2, 2, NULL );
 		// priorité du lecteur permet de preampter les deux tache ecrivaint pour lire les valeurs une seul case sera lu par le recepteur
 		// la file ne peut pas contenir plus d'un item au vu la priorité de la lecture 
 		xTaskCreate( vReceiverTask, "Receiver", 240, NULL, 1, NULL );
