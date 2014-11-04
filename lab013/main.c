@@ -18,12 +18,14 @@ struct xTaskData
 };
 
 xQueueHandle xQueue;
-
+// definition des variable structure des différentes taches en global car passé en paramettre 
+// pour permettre ainsi le fonctionnement pvparameters 
+	xTaskData xTask1 = {1,100};
+	xTaskData xTask2 = {2,200};
 
 int main( void )
 {
-	xTaskData tTask1 = {1,100};
-	xTaskData tTask2 = {2,200};
+
 	
 	 //xQueue pointeur de la file 
     xQueue = xQueueCreate( 5, sizeof( xTaskData ) );//! creation d'une file de 5 celulle avec pour longueur le type LONG
@@ -31,8 +33,8 @@ int main( void )
 	if( xQueue != NULL )
 	{
 		// priorité inversé 
-		xTaskCreate( vSenderTask, "Sender1", 240, ( void * ) &tTask1 , 1, NULL );
-		xTaskCreate( vSenderTask, "Sender2", 240, ( void * ) &tTask2, 1, NULL );
+		xTaskCreate( vSenderTask, "Sender1", 240, ( void * ) &xTask1 , 1, NULL );
+		xTaskCreate( vSenderTask, "Sender2", 240, ( void * ) &xTask2, 1, NULL );
 		// priorité du lecteur permet de preampter les deux tache ecrivaint pour lire les valeurs une seul case sera lu par le recepteur
 		// la file ne peut pas contenir plus d'un item au vu la priorité de la lecture 
 		xTaskCreate( vReceiverTask, "Receiver", 240, NULL, 2, NULL );
@@ -55,17 +57,17 @@ int main( void )
 static void vSenderTask( void *pvParameters )
 {
 //long lValueToSend;
-//xTaskData xSendData;
+xTaskData xSendData;
 portBASE_TYPE xStatus;
 
-	//xSendData.uiTache = ( xTaskData*) pvParameters; //  declaration de pv Parameters 
+//	xSendData.uiTache = ( xTaskData*) pvParameters; //  declaration de pv Parameters 
 
 	for( ;; )
 	{
 		// pour permettre le fonctionnement avec un inverse de priorité il suffit de remplacer les temps blockant 
 		// l'écriture devras avoir un temps blockant pour bloqué l'écriture quand la file sera pleine et ainsi permettre a la lecture
 		// de libéré de la place pour écrire a nouveaux 
-		xStatus = xQueueSendToBack( xQueue, ( xTaskData*) pvParameters, 0 );
+		xStatus = xQueueSendToBack( xQueue,  pvParameters, 0 );
 
 		if( xStatus != pdPASS ) // message en cas d'erreur 
 		{
