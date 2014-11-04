@@ -17,7 +17,8 @@ xQueueHandle xQueue;
 
 int main( void )
 {
-    xQueue = xQueueCreate( 5, sizeof( long ) );
+	 //xQueue pointeur de la file 
+    xQueue = xQueueCreate( 5, sizeof( long ) );//! creation d'une file de 5 celulle avec pour longueur le type LONG
 
 	if( xQueue != NULL )
 	{
@@ -47,12 +48,12 @@ portBASE_TYPE xStatus;
 	{
 		xStatus = xQueueSendToBack( xQueue, &lValueToSend, 0 );
 
-		if( xStatus != pdPASS )
+		if( xStatus != pdPASS ) // message en cas d'erreur 
 		{
 			vPrintString( "Could not send to the queue.\r\n" );
 		}
 
-		taskYIELD();
+		taskYIELD(); // libere le CPU
 	}
 }
 
