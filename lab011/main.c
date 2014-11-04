@@ -24,7 +24,8 @@ int main( void )
 	{
 		xTaskCreate( vSenderTask, "Sender1", 240, ( void * ) 100, 1, NULL );
 		xTaskCreate( vSenderTask, "Sender2", 240, ( void * ) 200, 1, NULL );
-
+		// priorité du lecteur permet de preampter les deux tache ecrivaint pour lire les valeurs une seul case sera lu par le recepteur
+		// la file ne peut pas contenir plus d'un item au vu la priorité de la lecture 
 		xTaskCreate( vReceiverTask, "Receiver", 240, NULL, 2, NULL );
 
 		vTaskStartScheduler();
@@ -36,7 +37,12 @@ int main( void )
 		
 	for( ;; );
 }
-
+/**
+@brief : tache d'envoie 
+@detail : les fonctions d'ecritures ne sont pas utiliser de façons cyclique mais en permannence elle libérer juste le cpu a la 
+					a la fin de sont exécution.envoie de message différent entre les deux taches via pvparemeter
+@param : pvParameters permet d'envoyer dans la file le message entre les différente tache sender 
+*/
 static void vSenderTask( void *pvParameters )
 {
 long lValueToSend;
@@ -56,7 +62,12 @@ portBASE_TYPE xStatus;
 		taskYIELD(); // libere le CPU
 	}
 }
-
+/**
+@brief : fonction de réception 
+@detail : la fonction de reception ne s'execute que lorsque qu'un message et recus dans la file 
+					le timeout ne peut se déclenché que dans le cas ou la tache receive a l'initialisation s'éxécute 
+					en premier 
+*/
 static void vReceiverTask( void *pvParameters )
 {
 long lReceivedValue;
