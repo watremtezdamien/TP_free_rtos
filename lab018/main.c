@@ -78,7 +78,11 @@ static void vIntegerGenerator( void *pvParameters )
     vPrintString( "Generator task - Interrupt generated.\n\n" );
   }
 }
-
+/**
+@brief : tache écriture d'une phrase
+@detail : cette tache permet d'afficher une phrase.elle est bloquant en écriture et peut donc seulement s'éxécuté 
+					que quand il y a quelque chose a lire 
+*/
 static void vStringPrinter( void *pvParameters )
 {
   char *pcString;
@@ -97,7 +101,11 @@ static void prvSetupSoftwareInterrupt( void )
 
   NVIC_EnableIRQ( mainSW_INTERRUPT_ID );
 }
-
+/**
+@brief : interruption software 
+@detail : interruption qui lorsque que la queue interger est ecrite d'autorisé la tache string a s'éxécuté via 
+					xHigherPriorityWaken qui reveille la tache de lecture
+*/
 void vSoftwareInterruptHandler( void )
 {
   portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE; //utilisé pour reveiller la tache a plus haute priorité 
@@ -114,13 +122,13 @@ void vSoftwareInterruptHandler( void )
   while( uxQueueMessagesWaiting(xIntegerQueue) != errQUEUE_EMPTY ) // attente écriture dans la queue interger 
 																															
   {
-    ulReceivedNumber &= 0x03;
-   /*....*/					
+    ulReceivedNumber &= 0x03;               //ulreceivenumber = xqueuereceive ne serait t'il pas a adapter ??
+   xHigherPriorityTaskWoken = pdTRUE;				// reveille tache plus haute priorité 	
   }
 
   mainCLEAR_INTERRUPT();
 
-  /* ... */
+  xQueueSendToBack(xStringQueue, &pcStrings,0); // si ulreceivenumber =xqueuereceive alors remplacer pcstring par pcstring[ulreceive]
 }
 
 
