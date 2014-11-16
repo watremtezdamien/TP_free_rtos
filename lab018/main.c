@@ -22,6 +22,13 @@ static void vStringPrinter( void *pvParameters );
 
 static void prvSetupSoftwareInterrupt( void );
 
+/**
+@ brief : fonction d'interruption permet de recuperer les interruption 
+@ details : cette fonction est initialiser dans le startup et ainsi permet de cré le lien 
+					entre les interruptions software déclaré par la tache.
+
+					
+*/
 void vSoftwareInterruptHandler( void );
 
 
@@ -93,7 +100,7 @@ static void prvSetupSoftwareInterrupt( void )
 
 void vSoftwareInterruptHandler( void )
 {
-  portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE;
+  portBASE_TYPE xHigherPriorityTaskWoken = pdFALSE; //utilisé pour reveiller la tache a plus haute priorité 
   static unsigned long ulReceivedNumber;
 
   static const char *pcStrings[] =
@@ -104,10 +111,11 @@ void vSoftwareInterruptHandler( void )
       "String 3\n"
     };
 
-  while( /* ... */ != errQUEUE_EMPTY )
+  while( uxQueueMessagesWaiting(xIntegerQueue) != errQUEUE_EMPTY ) // attente écriture dans la queue interger 
+																															
   {
     ulReceivedNumber &= 0x03;
-    /* ... */
+   /*....*/					
   }
 
   mainCLEAR_INTERRUPT();
