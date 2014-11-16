@@ -1,16 +1,17 @@
 ce fichier regroupe l'ensemble des besoin necesaire pour le fonctionnement d'une PWM sous freertos 
 
-Pour s'assuré que tout ce qui est ecrit dans se document est réalisé en logiciel chaque fin de phrase devras être suivi d'un ECRIT
-Pour s'assuré que l'ensemble des test sont réussi et fonctionnel il seront écrit seras suivit de VALIDER 
+Pour s'assurer que tout ce qui est ecrit dans se document est réaliser en logiciel chaque fin de phrase devras être suivi d'un ECRIT
+Pour s'assure que l'ensemble des test sont réussi et fonctionnel il seront ecrit seras suivit de VALIDER 
 
-les besoin en entré : 
+les besoin en entrer : 
 -valeur de fréquence de la PWM.
 -valeur du temps de cycle de la PWM.
 
-les moyens nécéssaire  puremment logiciel freertos : 
+les moyens necessaire  puremment logiciel freertos : 
 -un queue message qui seras mis a jour et contenant les besoins en entré.
--une interruption ou tout autre moyent permettant la mise a jour de la queue message d'écrit au-dessus.
+-une interruption ou tout autre moyent permettant la mise a jour de la queue message d'ecrit au-dessus.(exemple interruption labs 018)
 
 les bessoins de test KEIL en simulation:
--un terminal qui peut modifié la queue message (si possible).
--un chronogramme montrant la sortie de la PWM.
+-un terminal qui peut modifier la queue message (si possible).
+-un chronogramme montrant la sortie de la PWM / simulation d'une led representant le tempo.
+

@@ -1,0 +1,20 @@
+ce fichier regroupe l'ensemble des besoin necesaire pour le fonctionnement d'une ADC sous freertos 
+
+Pour s'assuré que tout ce qui est ecrit dans se document est réalisé en logiciel chaque fin de phrase devras être suivi d'un ECRIT
+Pour s'assuré que l'ensemble des test sont réussi et fonctionnel il seront écrit seras suivit de VALIDER 
+
+
+besoins en entrer : 
+-interruption pour lecture valeur ADC.
+
+besoin en sortie :
+-transférer vers d'autre tache les résultat ADC.
+
+moyens necessaire logiciel freertos : 
+-un queue message pour la sortie contenant les valeurs ADC.
+-une interruption pour une messure ADC.
+
+
+besoins KEIL en simulation 
+-simulation d'un capteur piezoelectric.
+- affichage de la valeur retourner sur un terminal.
