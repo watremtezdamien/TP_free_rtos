@@ -119,16 +119,16 @@ void vSoftwareInterruptHandler( void )
       "String 3\n"
     };
 
-  while( uxQueueMessagesWaiting(xIntegerQueue) != errQUEUE_EMPTY ) // attente écriture dans la queue interger 
+  while( uxQueueMessagesWaiting(xStringQueue) != errQUEUE_EMPTY ) // attente écriture dans la queue interger 
 																															
   {
     ulReceivedNumber &= 0x03;               //ulreceivenumber = xqueuereceive ne serait t'il pas a adapter ??
-   xHigherPriorityTaskWoken = pdTRUE;				// reveille tache plus haute priorité 	
+  xQueueSendToBack(xStringQueue, &pcStrings,0); // si ulreceivenumber =xqueuereceive alors remplacer pcstring par pcstring[ulreceive]
   }
 
   mainCLEAR_INTERRUPT();
 
-  xQueueSendToBack(xStringQueue, &pcStrings,0); // si ulreceivenumber =xqueuereceive alors remplacer pcstring par pcstring[ulreceive]
+   xHigherPriorityTaskWoken = pdTRUE;				// reveille tache plus haute priorité 	
 }
 
 
