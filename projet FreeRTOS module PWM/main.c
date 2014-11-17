@@ -50,15 +50,18 @@ static void vPwmTaskReceiver(void* pvParameters)
 			{
 				if (cCmpt==0)
 				{
-					//GPIOSET;
+				cCmpt=true;
+				//GPIOSET;
 				//vTaskDelayUntil(,); mettre dans les parenthése les valeur pour temps allumage 
-					cCmpt=true;
+
 				}
 				else 
 				{
-					// GPIOCLR;
+  				cCmpt = false;
+				// GPIOCLR;
 				//	vTaskDelayUntil(,); mettre dans les parenthése les valeur tmps eteind 
-					cCmpt = false;
+
+					
 				}
 			}
 		}
