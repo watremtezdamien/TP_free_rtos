@@ -11,10 +11,10 @@ besoin en sortie :
 -transférer vers d'autre tache les résultat ADC.
 
 moyens necessaire logiciel freertos : 
--un queue message pour la sortie contenant les valeurs ADC.
--une interruption pour une messure ADC.
+- un queue message pour la sortie contenant les valeurs ADC.
+- une interruption pour une messure ADC.
 
 
 besoins KEIL en simulation 
--simulation d'un capteur piezoelectric.
+- simulation d'un capteur piezoelectric.
 - affichage de la valeur retourner sur un terminal.
