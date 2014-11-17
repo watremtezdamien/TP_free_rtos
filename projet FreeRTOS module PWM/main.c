@@ -19,12 +19,15 @@ static void vPwmTaskReceiver(void* pvParameters);
  /*declarantion xqueuehandle*/
 xQueueHandle xPwmQueue;
 xPwmData_t xPwmData ={50,1000} ;
+
+
 int main (void)
 {
 	xPwmQueue = xQueueCreate(2,sizeof(xPwmData_t)); // creation de la file de messsage pour la tache PWM
 	if( xPwmQueue != NULL )
 	{
 	xTaskCreate(vPwmTaskReceiver,"PWM",240,NULL,1,NULL);
+	vTaskStartScheduler();
 	}
 		for( ;; );
 }
@@ -48,7 +51,7 @@ static void vPwmTaskReceiver(void* pvParameters)
 			xStatus = xQueueReceive(xPwmQueue,&xPwmDataReceive,0);
 			if (xStatus == pdPASS)
 			{
-				if (cCmpt==0)
+				if (cCmpt==false)
 				{
 				cCmpt=true;
 				//GPIOSET;
