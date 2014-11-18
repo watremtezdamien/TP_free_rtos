@@ -43,11 +43,18 @@ int main( void )
 
 /*fonction ecriture  d'une fonction */
 static void prvNewPrintString( const portCHAR *pcString )
-{
+{ 
+	if (xMutex != NULL)
+	{
+		if( xSemaphoreTake( xMutex, ( TickType_t ) 10 ) == pdTRUE )
+    {
     static char cBuffer[ mainMAX_MSG_LEN ];
 
     sprintf( cBuffer, "%s", pcString );
     printf( cBuffer );
+	  xSemaphoreGive(xMutex);
+	  }
+ }
 
 }
 
