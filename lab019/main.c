@@ -41,7 +41,7 @@ int main( void )
 	for( ;; );
 }
 
-
+/*fonction ecriture  d'une fonction */
 static void prvNewPrintString( const portCHAR *pcString )
 {
     static char cBuffer[ mainMAX_MSG_LEN ];
