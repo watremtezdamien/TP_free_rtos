@@ -28,9 +28,8 @@ const char *pcTextForTask3 = "Task 3 is running\n";
 int main(void)
 {
   xTaskCreate( vTaskFunction, "Task 1", 240, (void*)pcTextForTask1, 1, NULL );
-
-  xTaskCreate( vTaskFunction2, "Task 2", 240, (void*)pcTextForTask2, 1, NULL );
-	xTaskCreate( vTaskFunction3, "Task 2", 240, (void*)pcTextForTask3, 3, NULL );
+  xTaskCreate( vTaskFunction2, "Task 2", 240, (void*)pcTextForTask2, 2, NULL );
+	xTaskCreate( vTaskFunction3, "Task 3", 240, (void*)pcTextForTask3, 3, NULL );
   vTaskStartScheduler();	
 	
   for(;;);
@@ -42,6 +41,7 @@ int main(void)
 */
 void vTaskFunction(void *pvParameters)
 {
+	
 	long lCount=0;
 	volatile unsigned long ul;
   char *pcTaskName;
@@ -49,9 +49,9 @@ void vTaskFunction(void *pvParameters)
 
   pcTaskName = ( char * ) pvParameters;
 	
-
+vTaskDelay(100);
   for(;;)	{
-		while(lCount !=100)
+		while(lCount !=1000)
 		{
 			lCount++;
 		}
@@ -62,6 +62,7 @@ void vTaskFunction(void *pvParameters)
 }
 void vTaskFunction2(void *pvParameters)
 {
+	
 	long lCount=0;
 	volatile unsigned long ul;
   char *pcTaskName;
@@ -69,9 +70,9 @@ void vTaskFunction2(void *pvParameters)
 
   pcTaskName = ( char * ) pvParameters;
 
-
+ vTaskDelay(200);
   for(;;)	{
-			while(lCount !=100)
+			while(lCount !=1000)
 		{
 			lCount++;
 		}
@@ -81,15 +82,16 @@ void vTaskFunction2(void *pvParameters)
 }
 void vTaskFunction3(void *pvParameters)
 {
+	
 	long lCount=0;
 	volatile unsigned long ul;
   char *pcTaskName;
 
   pcTaskName = ( char * ) pvParameters;
 	
-
+vTaskDelay(300);
   for(;;)	{
-			while(lCount !=200)
+			while(lCount !=2000)
 		{
 			lCount++;
 		}
