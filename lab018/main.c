@@ -72,7 +72,7 @@ static void vIntegerGenerator( void *pvParameters )
       xQueueSendToBack( xIntegerQueue, &ulValueToSend, 0 );
       ulValueToSend++;
     }
-
+		ulValueToSend=0;
     vPrintString( "Generator task - About to generate an interrupt.\n" );
     mainTRIGGER_INTERRUPT();
     vPrintString( "Generator task - Interrupt generated.\n\n" );
@@ -116,19 +116,22 @@ void vSoftwareInterruptHandler( void )
       "String 0\n",
       "String 1\n",
       "String 2\n",
-      "String 3\n"
+      "String 3\n",
+			"String 4\n"
     };
 
-  while( uxQueueMessagesWaiting(xStringQueue) != errQUEUE_EMPTY ) // attente écriture dans la queue interger 
+  while( uxQueueMessagesWaitingFromISR(xIntegerQueue) != errQUEUE_EMPTY ) // attente écriture dans la queue interger 
 																															
   {
-    ulReceivedNumber &= 0x03;               //ulreceivenumber = xqueuereceive ne serait t'il pas a adapter ??
-  xQueueSendToBack(xStringQueue, &pcStrings,0); // si ulreceivenumber =xqueuereceive alors remplacer pcstring par pcstring[ulreceive]
+		 xQueueReceiveFromISR( xIntegerQueue, &ulReceivedNumber,&xHigherPriorityTaskWoken);   //ulReceivedNumber &= 0x03;//ulreceivenumber = xqueuereceive ne serait t'il pas a adapter ??
+			/*reveille la tache en lecture bloquante*/
+
+		xQueueSendToBackFromISR(xStringQueue, &pcStrings[ulReceivedNumber],0); // si ulreceivenumber =xqueuereceive alors remplacer pcstring par pcstring[ulreceive]
+	
   }
 
   mainCLEAR_INTERRUPT();
 
-   xHigherPriorityTaskWoken = pdTRUE;				// reveille tache plus haute priorité 	
 }
 
 
