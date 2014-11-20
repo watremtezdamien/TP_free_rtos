@@ -13,8 +13,8 @@ static void vUartDabugTask( void* pvParameters);
 /*variable global*/
 //unsigned long ulTaskNumber[configEXPECTED_NO_RUNNING_TASKS];
 xQueueHandle  xI2cQueue,xUartQueue;
-xUartDataReceive_t xUartData
-xI2cDataTransmit_t xI2cData = {0x22,0x22};
+xUartDataReceive_t xUartData;
+xI2cDataTransmit_t xI2cData;
 int main (void)
 {
 		xI2cQueue = xQueueCreate( 1, sizeof(xI2cDataTransmit_t));
