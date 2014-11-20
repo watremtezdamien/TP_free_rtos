@@ -21,6 +21,7 @@ xUartDataReceive_t xUartData;
 xI2cDataTransmit_t xI2cData;
 int main (void)
 {
+
 		xI2cQueue = xQueueCreate( 1, sizeof(xI2cDataTransmit_t));
 		xUartQueue = xQueueCreate(1, sizeof(xUartDataReceive_t));
 		if( xI2cQueue != NULL)
@@ -41,10 +42,11 @@ static void vI2cTaskTransmit(void* pvParameters)
 {
 	portBASE_TYPE xStatus;
 	xI2cDataTransmit_t xI2cDataReadToTransmit;
+	I2C_XFER_T xI2cDataTransmit ;
 	Chip_I2C_Init(I2C0);
 	Chip_I2C_SetClockRate(I2C0, 100000);
 	/*ensemble des fonction CMSIS ou LPCOPEN pour l'initialisation com I2C*/
-	I2C_XFER_T xI2cDataTransmit ;
+
 
 	for ( ;; )
 	{
@@ -85,16 +87,18 @@ void  vUartSend(void)
 	const char *cDebugMessage[]={
 	"Menu UART\n\r",
 	"pour le driver de led envoyer une valeur entre 1 et 12\r\n",
-	"valeur = "		
+	"valeur = \r\n"		
 	};
 	for(int i=0; 3;i++)
 	{
-	Chip_UART_SendBlocking(UART0,cDebugMessage[i],50);
+	while(Chip_UART_CheckBusy(UART0)==SET);
+	Chip_UART_SendBlocking(UART0,cDebugMessage[i],8);
+	
 	}
 }
 void UART0_IRQHandler(void)
-{int ireceive;
- Chip_UART_Read(UART0,&xI2cData.Data,8);
+{
+ Chip_UART_Read(UART0, &xI2cData.Data,8);
 
- xQueueSendFromISR(xI2cQueue,xI2cData.Data,0);
+	xQueueSendFromISR(xI2cQueue,xI2cData.Data,0);
 }
