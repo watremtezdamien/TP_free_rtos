@@ -9,10 +9,11 @@
 
 /*declaration fonction*/
 static void vI2cTaskTransmit(void* pvParameters);
-
+static void vUartDabugTask( void* pvParameters);
 /*variable global*/
-unsigned long ulTaskNumber[configEXPECTED_NO_RUNNING_TASKS];
-xQueueHandle  xI2cQueue;
+//unsigned long ulTaskNumber[configEXPECTED_NO_RUNNING_TASKS];
+xQueueHandle  xI2cQueue,xUartQueue;
+xUartDataReceive_t xUartData
 xI2cDataTransmit_t xI2cData = {0x22,0x22};
 int main (void)
 {
@@ -34,8 +35,11 @@ static void vI2cTaskTransmit(void* pvParameters)
 {
 	portBASE_TYPE xStatus;
 	xI2cDataTransmit_t xI2cDataReadToTransmit;
+	Chip_I2C_Init(I2C0);
+	Chip_I2C_SetClockRate(I2C0, 100000);
 	/*ensemble des fonction CMSIS ou LPCOPEN pour l'initialisation com I2C*/
-	
+	I2C_XFER_T xI2cDataTransmit ;
+
 	for ( ;; )
 	{
 		if(uxQueueMessagesWaiting != NULL)
@@ -43,10 +47,16 @@ static void vI2cTaskTransmit(void* pvParameters)
 			xStatus = xQueueReceive(xI2cQueue, &xI2cDataReadToTransmit, 0); 
 			if( xStatus != pdPASS)
 			{
-				/*fonction de transfer I2C*/
+				xI2cDataTransmit.txBuff = xI2cDataReadToTransmit.Data;
+				Chip_I2C_MasterTransfer(I2C0,&xI2cDataTransmit);
 			}
 		}
 	} 
 	
+	
+}
+
+static void vUartDabugTask(void* pvParameters)
+{
 	
 }
