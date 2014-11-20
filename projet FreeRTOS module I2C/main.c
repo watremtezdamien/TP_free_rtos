@@ -8,10 +8,11 @@
 #include "user.h"
 
 #define UART0 LPC_UART0
-
+#define IRQ_SELECTION 	UART0_IRQn
 /*declaration fonction*/
 static void vI2cTaskTransmit(void* pvParameters);
 static void vUartTask( void* pvParameters);
+void UART0_IRQHandler(void);
 void  vUartSend(void);
 /*variable global*/
 //unsigned long ulTaskNumber[configEXPECTED_NO_RUNNING_TASKS];
@@ -68,6 +69,9 @@ static void vUartTask(void* pvParameters)
 	Chip_UART_SetBaud(UART0, 9600);
 	Chip_UART_TXEnable(UART0);
 	Chip_UART_IntEnable(UART0,(UART_IER_RLSINT|UART_IER_RBRINT));
+	/*paramettre interruption */
+	NVIC_SetPriority(IRQ_SELECTION, 1);
+	NVIC_EnableIRQ(IRQ_SELECTION);
 	for( ;; ){
 		/*lecture bloquand de la file de message uart remplis via l'interruption */
 		vUartSend();
