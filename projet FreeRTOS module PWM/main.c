@@ -9,10 +9,9 @@
 #include "user.h"
 //#include "basic_io.h"
 #include <stdbool.h>
-#include "ARMCM3.h"
 /*declaration variable global*/
 
-unsigned long ulTaskNumber[configEXPECTED_NO_RUNNING_TASKS];
+//unsigned long ulTaskNumber[configEXPECTED_NO_RUNNING_TASKS];
 
 /* declaration fonction */
 static void vPwmTaskReceiver(void* pvParameters);
