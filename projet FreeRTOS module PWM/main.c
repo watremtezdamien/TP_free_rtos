@@ -34,13 +34,13 @@ int main (void)
 
 
 /**
-@brief : definition de la tache PWM 
-@details : cette tache generer un signal PWM via une tache simple la file de message devras comporté deux valeurs 
-					 la frequence et le cycle c'est cette tache qui seras l'action de la sortie 
+*@brief : definition de la tache PWM 
+*@details : géneration d'une pwm via timer car le lpc1768 ne dispose pas de PWM 
+						création d'une tache de pwm software.
 */
 static void vPwmTaskReceiver(void* pvParameters)
 {
-	bool cCmpt=false;
+
 	xPwmData_t xPwmDataReceive;
 	portBASE_TYPE xStatus;
 	for ( ;; )
@@ -50,21 +50,11 @@ static void vPwmTaskReceiver(void* pvParameters)
 			xStatus = xQueueReceive(xPwmQueue,&xPwmDataReceive,0);
 			if (xStatus == pdPASS)
 			{
-				if (cCmpt==false)
-				{
-				cCmpt=true;
-				//GPIOSET;
-				//vTaskDelayUntil(,); mettre dans les parenthése les valeur pour temps allumage 
+				
 
-				}
-				else 
-				{
-  				cCmpt = false;
-				// GPIOCLR;
-				//	vTaskDelayUntil(,); mettre dans les parenthése les valeur tmps eteind 
 
 					
-				}
+				
 			}
 		}
 	}
