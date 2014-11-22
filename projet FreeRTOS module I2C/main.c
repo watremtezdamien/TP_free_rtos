@@ -87,7 +87,7 @@ static void vUartTask(void* pvParameters)
 	Chip_UART_TXEnable(UART0);
 	/*paramettre interruption */
 	Chip_UART_IntEnable(UART0,(UART_IER_RLSINT|UART_IER_RBRINT));
-	NVIC_SetPriority(IRQ_SELECTION, 1);
+	NVIC_SetPriority(IRQ_SELECTION, 5);
 	NVIC_EnableIRQ(IRQ_SELECTION);
 	for( ;; ){
 		/*lecture bloquand de la file de message uart remplis via l'interruption */
@@ -95,7 +95,7 @@ static void vUartTask(void* pvParameters)
 		vUartSendTerminal(Uart_Menu);
 
 		
-	 vTaskDelay(configTICK_RATE_HZ);
+	 vTaskDelay(configTICK_RATE_HZ/2);
 	}
 	
 }
