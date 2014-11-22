@@ -1,5 +1,5 @@
 /**@author : watremetz Damien 
-@brief : task freeRTOS pour utilisation périphérique I2C
+*@brief : task freeRTOS pour utilisation périphérique I2C
 */
 /*declaration include */
 #include "FreeRTOS.h"
@@ -11,6 +11,7 @@
 #define IRQ_SELECTION 	UART0_IRQn
 #define Uart_Menu 1
 /*declaration fonction*/
+
 static void vI2cTaskTransmit(void* pvParameters);
 
 static void vUartTask( void* pvParameters);
@@ -37,16 +38,16 @@ int main (void)
 
 		xI2cQueue = xQueueCreate( 1, sizeof(xI2cDataTransmit_t));
 		xUartQueue = xQueueCreate(1, sizeof(xUartDataReceive_t));
-		if( xI2cQueue != NULL)
-		{
+//		if( xI2cQueue != NULL)
+//		{
 			xTaskCreate(vUartTask,"UartTask",240,NULL,2,NULL);
-			xTaskCreate(vI2cTaskTransmit, "I2cTaskTransmit", 240,NULL, 1, NULL);
+			xTaskCreate(vI2cTaskTransmit, "I2cTaskTransmit", 240,NULL, 3, NULL);
 			vTaskStartScheduler();
-		}
-	 else
-	 {
-		 /*message error*/
-	 }
+//		}
+//	 else
+//	 {
+//		 /*message error*/
+//	 }
 
 	 for( ;; );
 	
@@ -63,14 +64,14 @@ static void vI2cTaskTransmit(void* pvParameters)
 
 	for ( ;; )
 	{
-			xStatus = xQueueReceive(xI2cQueue, &xI2cDataReadToTransmit, 0); 
+			xStatus = xQueueReceive(xI2cQueue, &xI2cDataReadToTransmit, portMAX_DELAY); 
 			if( xStatus != pdPASS)
 			{
 				xI2cDataTransmit.txBuff = xI2cDataReadToTransmit.Data;
 			//	Chip_I2C_MasterTransfer(I2C0,&xI2cDataTransmit);
 			}
 		}
-	taskYIELD();
+	vTaskDelay(configTICK_RATE_HZ);
 			
 	} 
 	
@@ -78,7 +79,7 @@ static void vI2cTaskTransmit(void* pvParameters)
 
 
 static void vUartTask(void* pvParameters)
-{int i;
+{
 	/*intialisation uart0 pour debug */
 	Chip_UART_Init(UART0);
 	Chip_UART_SetBaud(UART0, 115200);
@@ -94,11 +95,16 @@ static void vUartTask(void* pvParameters)
 		vUartSendTerminal(Uart_Menu);
 
 		
-	// vTaskDelay(configTICK_RATE_HZ);
+	 vTaskDelay(configTICK_RATE_HZ);
 	}
 	
 }
-
+/**
+*@brief : fonction d'envoie sur l'uart permet selon la valeur envoyé de selectionné quel envoie chosir
+*@param : iValeur permet de selectionné rapidement quel valeur envoyé ici les valeurs sont choisi 
+* 				grace a un define permettant de savoir quel valeur on souhaite envoyé sur l'uart.
+*@return : ne retourne rien 
+*/
 void  vUartSendTerminal( int ivaleur)
 {
 	if(ivaleur == Uart_Menu){
@@ -106,8 +112,11 @@ void  vUartSendTerminal( int ivaleur)
 	}
 	
 }
+/*erreur de flag pas de remise a zero de flag a corrigé aprés manger */
 void UART0_IRQHandler(void)
 {
  Chip_UART_Read(UART0, &xI2cData.Data,8);
- xQueueSendFromISR(xI2cQueue,xI2cData.Data,0);
+ 
+ xQueueSendFromISR(xI2cQueue,&xI2cData,0);
+ NVIC_ClearPendingIRQ(UART0_IRQn);
 }
