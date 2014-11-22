@@ -17,15 +17,15 @@ static void vUartTask( void* pvParameters);
 
 void UART0_IRQHandler(void);
 
-void  vUartSend(int xvaleur);
+void  vUartSendTerminal(int xvaleur);
 
 /*variable global*/
 //unsigned long ulTaskNumber[configEXPECTED_NO_RUNNING_TASKS];
 
 
-	const char cDebugMessage1[]={	"Menu UART\n\r"};
-	const char cDebugMessage2[]={"pour le driver de led envoyer une valeur entre 1 et 12\r\n"};
-	const char cDebugMessage3[]={	"valeur = \r\n"		};
+	const char cMenu[]={	"/**************Menu UART**************/\n\r"
+	"pour le driver de led envoyer une valeur entre 1 et 12\r\n"
+	"valeur = \r\n"		};
 	
 /*definition des queue*/
 xQueueHandle  xI2cQueue,xUartQueue;
@@ -91,7 +91,7 @@ static void vUartTask(void* pvParameters)
 	for( ;; ){
 		/*lecture bloquand de la file de message uart remplis via l'interruption */
 	
-		vUartSend(2);
+		vUartSendTerminal(2);
 
 		
 	// vTaskDelay(configTICK_RATE_HZ);
@@ -99,12 +99,12 @@ static void vUartTask(void* pvParameters)
 	
 }
 
-void  vUartSend( int ivaleur)
+void  vUartSendTerminal( int ivaleur)
 {
 
-	Chip_UART_SendBlocking(UART0,cDebugMessage1,sizeof(cDebugMessage1)-1);
-	Chip_UART_SendBlocking(UART0,cDebugMessage2,sizeof(cDebugMessage2)-1);
-	Chip_UART_SendBlocking(UART0,cDebugMessage3,sizeof(cDebugMessage3)-1);
+	Chip_UART_SendBlocking(UART0,cMenu,sizeof(cMenu)-1);
+
+	
 }
 void UART0_IRQHandler(void)
 {
