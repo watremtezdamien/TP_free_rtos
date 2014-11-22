@@ -9,7 +9,7 @@
 
 #define UART0 LPC_UART0
 #define IRQ_SELECTION 	UART0_IRQn
-
+#define Uart_Menu 1
 /*declaration fonction*/
 static void vI2cTaskTransmit(void* pvParameters);
 
@@ -91,7 +91,7 @@ static void vUartTask(void* pvParameters)
 	for( ;; ){
 		/*lecture bloquand de la file de message uart remplis via l'interruption */
 	
-		vUartSendTerminal(2);
+		vUartSendTerminal(Uart_Menu);
 
 		
 	// vTaskDelay(configTICK_RATE_HZ);
@@ -101,9 +101,9 @@ static void vUartTask(void* pvParameters)
 
 void  vUartSendTerminal( int ivaleur)
 {
-
+	if(ivaleur == Uart_Menu){
 	Chip_UART_SendBlocking(UART0,cMenu,sizeof(cMenu)-1);
-
+	}
 	
 }
 void UART0_IRQHandler(void)
