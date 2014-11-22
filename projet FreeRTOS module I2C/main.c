@@ -9,16 +9,29 @@
 
 #define UART0 LPC_UART0
 #define IRQ_SELECTION 	UART0_IRQn
+
 /*declaration fonction*/
 static void vI2cTaskTransmit(void* pvParameters);
+
 static void vUartTask( void* pvParameters);
+
 void UART0_IRQHandler(void);
-void  vUartSend(void);
+
+void  vUartSend(int xvaleur);
+
 /*variable global*/
 //unsigned long ulTaskNumber[configEXPECTED_NO_RUNNING_TASKS];
+
+
+	const char cDebugMessage1[]={	"Menu UART\n\r"};
+	const char cDebugMessage2[]={"pour le driver de led envoyer une valeur entre 1 et 12\r\n"};
+	const char cDebugMessage3[]={	"valeur = \r\n"		};
+	
+/*definition des queue*/
 xQueueHandle  xI2cQueue,xUartQueue;
 xUartDataReceive_t xUartData;
 xI2cDataTransmit_t xI2cData;
+
 int main (void)
 {
 
@@ -65,40 +78,36 @@ static void vI2cTaskTransmit(void* pvParameters)
 
 
 static void vUartTask(void* pvParameters)
-{
+{int i;
 	/*intialisation uart0 pour debug */
 	Chip_UART_Init(UART0);
-	Chip_UART_SetBaud(UART0, 9600);
+	Chip_UART_SetBaud(UART0, 115200);
+	Chip_UART_ConfigData(UART0, (UART_LCR_WLEN8 | UART_LCR_SBS_1BIT));
 	Chip_UART_TXEnable(UART0);
-	Chip_UART_IntEnable(UART0,(UART_IER_RLSINT|UART_IER_RBRINT));
 	/*paramettre interruption */
+	Chip_UART_IntEnable(UART0,(UART_IER_RLSINT|UART_IER_RBRINT));
 	NVIC_SetPriority(IRQ_SELECTION, 1);
 	NVIC_EnableIRQ(IRQ_SELECTION);
 	for( ;; ){
 		/*lecture bloquand de la file de message uart remplis via l'interruption */
-		vUartSend();
+	
+		vUartSend(2);
+
 		
+	// vTaskDelay(configTICK_RATE_HZ);
 	}
 	
 }
 
-void  vUartSend(void)
+void  vUartSend( int ivaleur)
 {
-	const char *cDebugMessage[]={
-	"Menu UART\n\r",
-	"pour le driver de led envoyer une valeur entre 1 et 12\r\n",
-	"valeur = \r\n"		
-	};
-	for(int i=0; 3;i++)
-	{
-	while(Chip_UART_CheckBusy(UART0)==SET);
-	Chip_UART_SendBlocking(UART0,cDebugMessage[i],8);
-	
-	}
+
+	Chip_UART_SendBlocking(UART0,cDebugMessage1,sizeof(cDebugMessage1)-1);
+	Chip_UART_SendBlocking(UART0,cDebugMessage2,sizeof(cDebugMessage2)-1);
+	Chip_UART_SendBlocking(UART0,cDebugMessage3,sizeof(cDebugMessage3)-1);
 }
 void UART0_IRQHandler(void)
 {
  Chip_UART_Read(UART0, &xI2cData.Data,8);
-
-	xQueueSendFromISR(xI2cQueue,xI2cData.Data,0);
+ xQueueSendFromISR(xI2cQueue,xI2cData.Data,0);
 }
