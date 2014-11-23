@@ -24,11 +24,14 @@
 static void vPwmTaskReceiver(void* pvParameters);
  /*declarantion xqueuehandle*/
 xQueueHandle xPwmQueue;
-xPwmData_t xPwmData  ;
+xPwmData_t xPwmData ;
 
 
 int main (void)
 {
+	xPwmData.ValeurReceive=4;
+	xPwmData.ValeurHigh=((xPwmData.ValeurReceive*10)*48)/100;
+	xPwmData.ValeurLow=48-xPwmData.ValeurHigh;
 	xPwmQueue = xQueueCreate(2,sizeof(xPwmData_t)); // creation de la file de messsage pour la tache PWM
 	if( xPwmQueue != NULL )
 	{
@@ -62,19 +65,24 @@ static void vPwmTaskReceiver(void* pvParameters)
 	Chip_TIMER_MatchEnableInt(Timer0, 0);
 	/*initialisation pin MAt0 en sortie PWM sur deux declenchement*/
 	Chip_TIMER_ExtMatchControlSet(Timer0,StateLow,MatToggle,MatChannel0);
-	Chip_TIMER_SetMatch(Timer0, MatChannel0, (timer / 48));
-	Chip_TIMER_SetMatch(Timer0, MatChannel0, (timer / 24));
+	Chip_TIMER_SetMatch(Timer0, MatChannel0, (timer / xPwmData.ValeurHigh));// valeur high
+	Chip_TIMER_SetMatch(Timer0, MatChannel0, (timer / xPwmData.ValeurLow));// valeur low
 	Chip_TIMER_ResetOnMatchEnable(Timer0, 1);
 	Chip_TIMER_Enable(Timer0);
+	/*activation interruption*/
+	NVIC_ClearPendingIRQ(TIMER0_IRQn);
+	NVIC_EnableIRQ(TIMER0_IRQn);
 	for ( ;; )
 	{
 		if (uxQueueMessagesWaiting(xPwmQueue) !=0)
 		{
-			xStatus = xQueueReceive(xPwmQueue,&xPwmDataReceive,0);
+			xStatus = xQueueReceive(xPwmQueue,&xPwmDataReceive,portMAX_DELAY);
 			if (xStatus == pdPASS)
 			{
-				
-
+				xPwmDataReceive.ValeurHigh=((xPwmData.ValeurReceive*10)*48)/100;
+				xPwmDataReceive.ValeurLow=48-xPwmData.ValeurHigh;
+				Chip_TIMER_SetMatch(Timer0, MatChannel0, (timer / xPwmDataReceive.ValeurHigh));				
+				Chip_TIMER_SetMatch(Timer0, MatChannel0, (timer / xPwmDataReceive.ValeurLow));// valeur low
 
 					
 				
@@ -82,11 +90,7 @@ static void vPwmTaskReceiver(void* pvParameters)
 		}
 	}
 }
-void timer1_irqhandler (void)
-{
-	
-	NVIC_ClearPendingIRQ(IRQ_Timer1);
-}
+
 void TIMER0_IRQHandler(void)
 {
 
