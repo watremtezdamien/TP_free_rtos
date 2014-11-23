@@ -2,8 +2,7 @@
 #define USER_H
 typedef struct xPwmData
 {
-	unsigned int Cycle;
-	unsigned long frequency;
+int atentemodif;
 }xPwmData_t;
 
 
