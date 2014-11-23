@@ -44,6 +44,9 @@ int main (void)
 *@brief : definition de la tache PWM 
 *@details : géneration d'une pwm via timer car le lpc1768 ne dispose pas de PWM 
 * 					création d'une tache de pwm software.
+*						Cette tache éxécute une pwm qui gérer de facons autonome tant que l'utilisateur
+*						ne change pas la valeur de la PWMqueue la generation de la PWM est autonome via 
+*						les sortie de MATCH qui permette de toggle lorsque la valeur est atteinte
 *@return : ne retourne pas 
 */
 static void vPwmTaskReceiver(void* pvParameters)
@@ -59,7 +62,6 @@ static void vPwmTaskReceiver(void* pvParameters)
 	Chip_TIMER_MatchEnableInt(Timer0, 0);
 	/*initialisation pin MAt0 en sortie PWM sur deux declenchement*/
 	Chip_TIMER_ExtMatchControlSet(Timer0,StateLow,MatToggle,MatChannel0);
-	
 	Chip_TIMER_SetMatch(Timer0, MatChannel0, (timer / 48));
 	Chip_TIMER_SetMatch(Timer0, MatChannel0, (timer / 24));
 	Chip_TIMER_ResetOnMatchEnable(Timer0, 1);
