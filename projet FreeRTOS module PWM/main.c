@@ -62,16 +62,16 @@ static void vPwmTaskReceiver(void* pvParameters)
 	Chip_TIMER_Reset(Timer0);
 	timer = Chip_Clock_GetSystemClockRate();
 	/*initialisation des interruption pour generer la PWM*/
-	Chip_TIMER_MatchEnableInt(Timer0, 0);
+	Chip_TIMER_MatchEnableInt(Timer0, MatChannel0);
 	/*initialisation pin MAt0 en sortie PWM sur deux declenchement*/
-	Chip_TIMER_ExtMatchControlSet(Timer0,StateLow,MatToggle,MatChannel0);
 	Chip_TIMER_SetMatch(Timer0, MatChannel0, (timer / xPwmData.ValeurHigh));// valeur high
-	Chip_TIMER_SetMatch(Timer0, MatChannel0, (timer / xPwmData.ValeurLow));// valeur low
-	Chip_TIMER_ResetOnMatchEnable(Timer0, 1);
+	Chip_TIMER_ExtMatchControlSet(Timer0,StateLow,MatToggle,MatChannel0);
+	Chip_TIMER_ResetOnMatchEnable(Timer0,MatChannel0);
 	Chip_TIMER_Enable(Timer0);
 	/*activation interruption*/
 	NVIC_ClearPendingIRQ(TIMER0_IRQn);
 	NVIC_EnableIRQ(TIMER0_IRQn);
+	NVIC_SetPriority(TIMER0_IRQn,5);
 	for ( ;; )
 	{
 		if (uxQueueMessagesWaiting(xPwmQueue) !=0)
@@ -82,7 +82,6 @@ static void vPwmTaskReceiver(void* pvParameters)
 				xPwmDataReceive.ValeurHigh=((xPwmData.ValeurReceive*10)*48)/100;
 				xPwmDataReceive.ValeurLow=48-xPwmData.ValeurHigh;
 				Chip_TIMER_SetMatch(Timer0, MatChannel0, (timer / xPwmDataReceive.ValeurHigh));				
-				Chip_TIMER_SetMatch(Timer0, MatChannel0, (timer / xPwmDataReceive.ValeurLow));// valeur low
 
 					
 				
